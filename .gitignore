@@ -1,0 +1,10 @@
+﻿/config/database.php
+.env
+.env.*
+/database/*.sql
+/vendor/
+/node_modules/
+*.log
+*.tmp
+/uploads/
+/storage/
