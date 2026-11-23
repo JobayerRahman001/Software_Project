@@ -1,0 +1,1832 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b2340">
+
+    <title>MediLink | Healthcare Management</title>
+
+    <meta name="description" content="MediLink healthcare management platform. Secure access for patients, doctors and healthcare professionals.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* =====================================================
+           MEDILINK - LANDING AND AUTHENTICATION DESIGN
+           Existing IDs, API endpoints and workflow preserved.
+        ===================================================== */
+
+        :root {
+            --ml-primary: #2563eb;
+            --ml-primary-dark: #1d4ed8;
+            --ml-teal: #14b8a6;
+            --ml-navy: #0b2340;
+            --ml-navy-light: #143759;
+
+            --ml-bg: #f3f7fc;
+            --ml-white: #ffffff;
+            --ml-text: #172b45;
+            --ml-muted: #718198;
+            --ml-border: #dce6f0;
+
+            --ml-radius: 15px;
+            --ml-shadow: 0 20px 60px rgba(15, 35, 60, 0.09);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body.login-page {
+            min-height: 100vh;
+            padding: 0;
+            display: block;
+            background: var(--ml-bg);
+            color: var(--ml-text);
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .ml-shell {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+        }
+
+        /* ---------- Left visual panel ---------- */
+
+        .ml-visual {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            padding: 42px clamp(28px, 5vw, 76px);
+            overflow: hidden;
+            color: white;
+
+            background:
+                radial-gradient(circle at 15% 15%, rgba(37,99,235,.30), transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(20,184,166,.20), transparent 35%),
+                linear-gradient(145deg, #071a31, #0b2949 55%, #103b59);
+        }
+
+        .ml-visual::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+            background-size: 42px 42px;
+            pointer-events: none;
+        }
+
+        .ml-visual::after {
+            content: "";
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            right: -190px;
+            top: 20%;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow:
+                0 0 0 45px rgba(255,255,255,.02),
+                0 0 0 90px rgba(255,255,255,.015);
+            pointer-events: none;
+        }
+
+        .ml-visual-inner {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        /* Brand */
+
+        .ml-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -.5px;
+            text-decoration: none;
+        }
+
+        .ml-mark {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            color: white;
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            box-shadow: 0 8px 25px rgba(20,184,166,.25);
+        }
+
+        .ml-mark i {
+            font-size: 1.4rem;
+        }
+
+        .ml-brand small {
+            display: block;
+            color: #91a9c1;
+            font-size: .65rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Hero */
+
+        .ml-hero {
+            max-width: 610px;
+            margin: auto 0;
+            padding: 50px 0;
+        }
+
+        .ml-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 13px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 30px;
+            color: #a9c7e0;
+            background: rgba(255,255,255,.055);
+            font-size: .76rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 27px;
+        }
+
+        .ml-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ml-teal);
+            box-shadow: 0 0 12px rgba(20,184,166,.9);
+            animation: mlPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes mlPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+
+        .ml-hero h1 {
+            max-width: 610px;
+            color: #fff;
+            font-size: clamp(2.4rem, 4.3vw, 4.1rem);
+            font-weight: 800;
+            line-height: 1.12;
+            letter-spacing: -2.3px;
+        }
+
+        .ml-hero h1 span {
+            color: #40d5c2;
+        }
+
+        .ml-hero > p {
+            max-width: 470px;
+            margin-top: 23px;
+            color: #a5bad0;
+            font-size: 1.02rem;
+            line-height: 1.8;
+        }
+
+        /* Animated healthcare visual */
+
+        .ml-wave-card {
+            margin-top: 38px;
+            padding: 19px 20px 12px;
+            border: 1px solid rgba(255,255,255,.11);
+            border-radius: 17px;
+            background: linear-gradient(120deg, rgba(255,255,255,.09), rgba(255,255,255,.025));
+            backdrop-filter: blur(12px);
+            box-shadow: 0 18px 45px rgba(0,0,0,.15);
+            animation: mlFloat 4.5s ease-in-out infinite;
+        }
+
+        @keyframes mlFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .ml-wave-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #d6e5f3;
+            font-size: .77rem;
+            font-weight: 600;
+        }
+
+        .ml-wave-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ml-wave-label span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ml-teal);
+        }
+
+        .ml-wave-status {
+            color: #6fe0d1;
+        }
+
+        #ecg {
+            display: block;
+            width: 100%;
+            height: 105px;
+            margin-top: 10px;
+        }
+
+        .ml-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .ml-feature {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #b8cbe0;
+            font-size: .76rem;
+            font-weight: 500;
+        }
+
+        .ml-feature i {
+            color: #42d4c1;
+        }
+
+        .ml-footer {
+            position: relative;
+            z-index: 1;
+            color: #809bb6;
+            font-size: .75rem;
+        }
+
+        /* ---------- Right authentication panel ---------- */
+
+        .ml-auth-panel {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 45px 30px;
+            background: var(--ml-bg);
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 590px;
+            margin: auto;
+            padding: clamp(22px, 3vw, 38px);
+            border: 1px solid rgba(220,230,240,.85);
+            border-radius: 22px;
+            background: var(--ml-white);
+            box-shadow: var(--ml-shadow);
+            animation: mlAppear .65s ease both;
+        }
+
+        @keyframes mlAppear {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ml-mobile-brand {
+            display: none;
+        }
+
+        .login-box h1 {
+            color: var(--ml-navy);
+            font-size: 1.55rem;
+            text-align: left;
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .login-box h1 i {
+            color: var(--ml-teal);
+            margin-right: 7px;
+        }
+
+        .login-box > .subtitle {
+            color: var(--ml-muted);
+            text-align: left;
+            font-size: .84rem;
+            margin: 5px 0 28px;
+        }
+
+        .ml-form-heading {
+            margin-bottom: 18px;
+        }
+
+        .ml-form-heading h2 {
+            color: var(--ml-text);
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -.8px;
+        }
+
+        .ml-form-heading p {
+            margin-top: 6px;
+            color: var(--ml-muted);
+            font-size: .87rem;
+        }
+
+        .ml-field {
+            margin-bottom: 17px;
+        }
+
+        .ml-field label,
+        .login-box .fields label {
+            display: block;
+            margin-bottom: 8px;
+            color: #253e59;
+            font-size: .83rem;
+            font-weight: 700;
+        }
+
+        .ml-input-wrap {
+            position: relative;
+        }
+
+        .ml-input-wrap > i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #92a3b8;
+            pointer-events: none;
+        }
+
+        .ml-input-wrap input,
+        .ml-input-wrap select,
+        .login-box input,
+        .login-box select {
+            width: 100%;
+            min-height: 50px;
+            padding: 11px 15px;
+            border: 1px solid var(--ml-border);
+            border-radius: 11px;
+            color: var(--ml-text);
+            background: #fff;
+            font-size: .88rem;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .ml-input-wrap input,
+        .ml-input-wrap select {
+            padding-left: 44px;
+        }
+
+        .login-box input:focus,
+        .login-box select:focus {
+            border-color: var(--ml-primary);
+            box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+            outline: none;
+        }
+
+        .ml-input-wrap input::placeholder {
+            color: #a6b3c2;
+        }
+
+        .ml-input-wrap select {
+            cursor: pointer;
+        }
+
+        .ml-password {
+            padding-right: 75px !important;
+        }
+
+        .ml-toggle {
+            position: absolute;
+            top: 6px;
+            right: 7px;
+            height: 38px;
+            padding: 0 11px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--ml-primary);
+            font-size: .8rem;
+            font-weight: 700;
+        }
+
+        .ml-toggle:hover {
+            background: #eff5ff;
+        }
+
+        /* ---------- Role selection ---------- */
+
+        .roles {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .role-card {
+            position: relative;
+            min-width: 0;
+            min-height: 105px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            border: 1px solid var(--ml-border);
+            border-radius: 13px;
+            background: #fff;
+            color: var(--ml-text);
+            text-align: left;
+            font-family: inherit;
+            cursor: pointer;
+            transition: border-color .2s, background .2s, transform .2s, box-shadow .2s;
+        }
+
+        .role-card:hover {
+            border-color: var(--ml-primary);
+            background: #f4f8ff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(37,99,235,.09);
+        }
+
+        .role-card:focus-visible {
+            outline: 3px solid rgba(37,99,235,.35);
+            outline-offset: 2px;
+        }
+
+        .role-card i {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            color: var(--ml-primary);
+            background: #edf4ff;
+            font-size: 1rem;
+        }
+
+        .role-card .role-name {
+            color: #263f5b;
+            font-size: .83rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .role-card .role-arrow {
+            position: absolute;
+            right: 13px;
+            top: 15px;
+            color: #9aabc0;
+            font-size: .75rem;
+        }
+
+        .ml-role-intro {
+            margin-bottom: 15px;
+            color: var(--ml-muted);
+            font-size: .86rem;
+        }
+
+        /* ---------- Buttons ---------- */
+
+        .login-box .btn.primary {
+            width: 100%;
+            min-height: 51px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            margin-top: 9px;
+            border: 0;
+            border-radius: 11px;
+            color: #fff;
+            background: linear-gradient(110deg, #2563eb, #1d4ed8);
+            font-size: .92rem;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(37,99,235,.2);
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .login-box .btn.primary:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(37,99,235,.28);
+        }
+
+        .login-box .btn.primary:disabled {
+            opacity: .7;
+            cursor: progress;
+            transform: none;
+        }
+
+        .ml-secondary-actions {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .link {
+            width: auto;
+            display: inline-flex;
+            margin: 0;
+            color: var(--ml-primary);
+            background: transparent;
+            border: 0;
+            font-size: .81rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .link:hover {
+            color: var(--ml-primary-dark);
+            text-decoration: underline;
+        }
+
+        .hint {
+            color: var(--ml-muted);
+            font-size: .77rem;
+            line-height: 1.6;
+        }
+
+        #msg {
+            display: none;
+            margin-top: 17px;
+            padding: 12px 14px;
+            border: 1px solid #f2caca;
+            border-radius: 10px;
+            color: #b52b2b;
+            background: #fff0f0;
+            font-size: .83rem;
+            text-align: left;
+        }
+
+        #msg.show {
+            display: block;
+            animation: mlAppear .2s ease;
+        }
+
+        #msg.success {
+            border-color: #b6e5d7;
+            color: #087a60;
+            background: #eafaf4;
+        }
+
+        .ml-demo {
+            margin-top: 18px;
+            padding: 12px 14px;
+            border: 1px solid #e3eaf4;
+            border-radius: 10px;
+            background: #f7faff;
+            color: #718198;
+            font-size: .74rem;
+            line-height: 1.6;
+        }
+
+        .ml-demo strong {
+            color: #405a76;
+        }
+
+        .ml-security {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 25px;
+            color: #8a9bb0;
+            font-size: .73rem;
+            text-align: center;
+        }
+
+        .ml-security i {
+            color: #14a58f;
+        }
+
+        .ml-hidden {
+            display: none !important;
+        }
+
+        /* ---------- Form layout ---------- */
+
+        .login-box form .fields {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 13px;
+        }
+
+        .login-box .fields > div {
+            min-width: 0;
+        }
+
+        .login-box .fields input,
+        .login-box .fields select {
+            margin-top: 0;
+        }
+
+        .ml-registration-fields {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+
+        .ml-registration-fields .full {
+            grid-column: 1 / -1;
+        }
+
+        /* ---------- Responsive ---------- */
+
+        @media (max-width: 1000px) {
+            .ml-shell {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .ml-visual {
+                padding: 35px 30px;
+            }
+
+            .ml-hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .ml-features {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 800px) {
+            .ml-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .ml-visual {
+                min-height: auto;
+                padding: 25px 25px 30px;
+            }
+
+            .ml-hero {
+                padding: 35px 0 10px;
+            }
+
+            .ml-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .ml-hero > p {
+                margin-top: 14px;
+                font-size: .9rem;
+            }
+
+            .ml-wave-card {
+                margin-top: 25px;
+            }
+
+            .ml-features {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .ml-footer {
+                display: none;
+            }
+
+            .ml-auth-panel {
+                min-height: auto;
+                padding: 35px 20px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .ml-visual {
+                padding: 22px 20px;
+            }
+
+            .ml-hero {
+                padding: 30px 0 5px;
+            }
+
+            .ml-hero h1 {
+                font-size: 2.1rem;
+                letter-spacing: -1px;
+            }
+
+            .ml-wave-card {
+                padding: 14px;
+            }
+
+            #ecg {
+                height: 80px;
+            }
+
+            .ml-features {
+                grid-template-columns: 1fr;
+            }
+
+            .ml-auth-panel {
+                padding: 25px 13px;
+            }
+
+            .login-box {
+                padding: 22px 17px;
+                border-radius: 17px;
+            }
+
+            .ml-registration-fields {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="login-page">
+
+<div class="ml-shell">
+
+    <!-- =================================================
+         LEFT: MEDILINK BRANDING AND VISUAL
+    ================================================== -->
+
+    <aside class="ml-visual">
+
+        <div class="ml-visual-inner">
+
+            <a href="index.html" class="ml-brand">
+                <span class="ml-mark">
+                    <i class="fas fa-plus"></i>
+                </span>
+
+                <span>
+                    MediLink
+                    <small>Healthcare Management</small>
+                </span>
+            </a>
+
+            <div class="ml-hero">
+
+                <div class="ml-eyebrow">
+                    <span class="ml-dot"></span>
+                    Connected Healthcare Platform
+                </div>
+
+                <h1>
+                    Better care starts with
+                    <span>better connection.</span>
+                </h1>
+
+                <p>
+                    One secure platform connecting patients,
+                    doctors and healthcare professionals.
+                    Manage care, records and daily operations
+                    through your dedicated workspace.
+                </p>
+
+                <div class="ml-wave-card">
+
+                    <div class="ml-wave-header">
+                        <div class="ml-wave-label">
+                            <span></span>
+                            Healthcare Technology
+                        </div>
+
+                        <div class="ml-wave-status">
+                            <i class="fas fa-circle-check"></i>
+                            Connected
+                        </div>
+                    </div>
+
+                    <canvas id="ecg" aria-hidden="true"></canvas>
+
+                </div>
+
+                <div class="ml-features">
+
+                    <div class="ml-feature">
+                        <i class="fas fa-shield-halved"></i>
+                        Secure Access
+                    </div>
+
+                    <div class="ml-feature">
+                        <i class="fas fa-users"></i>
+                        Role-Based Workspaces
+                    </div>
+
+                    <div class="ml-feature">
+                        <i class="fas fa-heart-pulse"></i>
+                        Connected Care
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="ml-footer">
+                &copy; <span id="current-year"></span> MediLink. All rights reserved.
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =================================================
+         RIGHT: AUTHENTICATION
+    ================================================== -->
+
+    <main class="ml-auth-panel">
+
+        <div class="login-box">
+
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                MediLink
+            </h1>
+
+            <p class="subtitle">
+                Healthcare management system
+            </p>
+
+
+            <!-- STEP 1: ROLE SELECTION -->
+
+            <section id="step-role">
+
+                <div class="ml-form-heading">
+                    <h2>Welcome back</h2>
+                    <p>Select your role to access your workspace.</p>
+                </div>
+
+                <p class="ml-role-intro">
+                    Continue as:
+                </p>
+
+                <div class="roles" id="roles"></div>
+
+            </section>
+
+
+            <!-- STEP 2: LOGIN -->
+
+            <form id="step-login" class="hidden">
+
+                <div class="ml-form-heading">
+                    <h2 id="login-title">Sign in</h2>
+                    <p>Enter your account details to continue.</p>
+                </div>
+
+                <div class="fields">
+
+                    <div class="ml-field">
+                        <label for="login-email">Email address</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-envelope"></i>
+
+                            <input
+                                id="login-email"
+                                type="email"
+                                name="email"
+                                autocomplete="username"
+                                placeholder="name@hospital.com"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="ml-field">
+                        <label for="login-password">Password</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-lock"></i>
+
+                            <input
+                                id="login-password"
+                                class="ml-password"
+                                type="password"
+                                name="password"
+                                autocomplete="current-password"
+                                placeholder="Enter your password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="ml-toggle"
+                                id="toggle-password"
+                                aria-label="Show password"
+                                aria-pressed="false"
+                            >
+                                Show
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="btn primary" type="submit" id="login-submit">
+                    <span>Sign in to your account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="ml-secondary-actions">
+
+                    <button
+                        type="button"
+                        class="link"
+                        id="to-register"
+                    >
+                        New patient? Create an account
+                    </button>
+
+                    <button
+                        type="button"
+                        class="link back"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                        &nbsp;Change role
+                    </button>
+
+                </div>
+
+                <div class="ml-demo">
+                    <strong>Demo account:</strong><br>
+                    admin@medilink.com / password123<br>
+                    Use only if this account exists in your database.
+                </div>
+
+            </form>
+
+
+            <!-- STEP 3: PATIENT REGISTRATION -->
+
+            <form id="step-register" class="hidden">
+
+                <div class="ml-form-heading">
+                    <h2>Create your account</h2>
+                    <p>Register as a patient to get started.</p>
+                </div>
+
+                <div class="fields ml-registration-fields">
+
+                    <div class="ml-field full">
+                        <label for="register-name">Full name</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-user"></i>
+
+                            <input
+                                id="register-name"
+                                name="full_name"
+                                type="text"
+                                autocomplete="name"
+                                placeholder="Enter your full name"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="ml-field full">
+                        <label for="register-email">Email address</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-envelope"></i>
+
+                            <input
+                                id="register-email"
+                                type="email"
+                                name="email"
+                                autocomplete="email"
+                                placeholder="name@example.com"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="ml-field full">
+                        <label for="register-password">Password</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-lock"></i>
+
+                            <input
+                                id="register-password"
+                                type="password"
+                                name="password"
+                                minlength="6"
+                                autocomplete="new-password"
+                                placeholder="Minimum 6 characters"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="ml-field">
+                        <label for="date-of-birth">Date of birth</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-calendar"></i>
+
+                            <input
+                                id="date-of-birth"
+                                type="date"
+                                name="date_of_birth"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="ml-field">
+                        <label for="gender">Gender</label>
+
+                        <div class="ml-input-wrap">
+                            <i class="fas fa-venus-mars"></i>
+
+                            <select id="gender" name="gender" required>
+                                <option value="">Select gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button class="btn primary" type="submit" id="register-submit">
+                    <span>Create patient account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+
+                <div class="ml-secondary-actions">
+                    <button type="button" class="link back">
+                        <i class="fas fa-arrow-left"></i>
+                        &nbsp;Back to sign in
+                    </button>
+                </div>
+
+            </form>
+
+
+            <!-- GLOBAL MESSAGE -->
+
+            <p
+                id="msg"
+                class="hint"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+
+            <div class="ml-security">
+                <i class="fas fa-shield-halved"></i>
+                Your account is protected by secure authentication.
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   1. ROLE CONFIGURATION
+   These keys must match the roles in your PHP HOME array.
+========================================================= */
+
+const ROLES = {
+
+    patient: ['Patient', 'fa-user'],
+
+    doctor: ['Doctor', 'fa-user-doctor'],
+
+    admin: ['Administrator', 'fa-user-shield'],
+
+    staff: ['Front Desk Staff', 'fa-headset'],
+
+    financial: ['Financial Team', 'fa-coins'],
+
+    datascientist: ['Data Scientist', 'fa-chart-line'],
+
+    insurance: ['Insurance Provider', 'fa-shield-halved']
+
+};
+
+let role = '';
+
+const $ = id => document.getElementById(id);
+
+
+/* =========================================================
+   2. CURRENT YEAR
+========================================================= */
+
+$('current-year').textContent = new Date().getFullYear();
+
+
+/* =========================================================
+   3. PAGE SWITCHING
+   Original three-step workflow preserved.
+========================================================= */
+
+function show(id) {
+
+    [
+        'step-role',
+        'step-login',
+        'step-register'
+    ].forEach(step => {
+
+        $(step).classList.toggle('hidden', step !== id);
+
+    });
+
+}
+
+function say(message, success = false) {
+
+    const element = $('msg');
+
+    element.textContent = message || '';
+
+    element.classList.toggle('show', Boolean(message));
+
+    element.classList.toggle(
+        'success',
+        Boolean(message) && success
+    );
+
+}
+
+function clearMessage() {
+    say('');
+}
+
+
+/* =========================================================
+   4. BUILD ROLE CARDS
+========================================================= */
+
+$('roles').innerHTML = Object.entries(ROLES).map(
+    ([key, [name, icon]]) => `
+
+        <button
+            type="button"
+            class="role-card"
+            data-role="${key}"
+            aria-label="Continue as ${name}"
+        >
+
+            <i class="fas ${icon}" aria-hidden="true"></i>
+
+            <span class="role-name">${name}</span>
+
+            <i class="fas fa-arrow-up-right-from-square role-arrow"
+               aria-hidden="true"></i>
+
+        </button>
+
+    `
+).join('');
+
+
+/* =========================================================
+   5. SELECT ROLE
+========================================================= */
+
+$('roles').addEventListener('click', event => {
+
+    const card = event.target.closest('.role-card');
+
+    if (!card) return;
+
+    const selectedRole = card.dataset.role;
+
+    if (!Object.prototype.hasOwnProperty.call(ROLES, selectedRole)) {
+        return;
+    }
+
+    role = selectedRole;
+
+    $('login-title').textContent =
+        'Sign in as ' + ROLES[role][0];
+
+    // Only patients can self-register.
+    $('to-register').classList.toggle(
+        'ml-hidden',
+        role !== 'patient'
+    );
+
+    clearMessage();
+
+    show('step-login');
+
+    $('login-email').focus();
+
+});
+
+
+/* =========================================================
+   6. BACK BUTTONS
+========================================================= */
+
+document.querySelectorAll('.back').forEach(button => {
+
+    button.addEventListener('click', () => {
+
+        clearMessage();
+
+        const formId = button.closest('form')?.id;
+
+        if (formId === 'step-register') {
+
+            show('step-login');
+
+            return;
+
+        }
+
+        show('step-role');
+
+    });
+
+});
+
+
+/* =========================================================
+   7. OPEN REGISTRATION
+========================================================= */
+
+$('to-register').addEventListener('click', () => {
+
+    if (role !== 'patient') {
+        return;
+    }
+
+    clearMessage();
+
+    show('step-register');
+
+    $('register-name').focus();
+
+});
+
+
+/* =========================================================
+   8. PASSWORD VISIBILITY
+========================================================= */
+
+$('toggle-password').addEventListener('click', function () {
+
+    const password = $('login-password');
+
+    const visible = password.type === 'password';
+
+    password.type = visible ? 'text' : 'password';
+
+    this.textContent = visible ? 'Hide' : 'Show';
+
+    this.setAttribute(
+        'aria-pressed',
+        String(visible)
+    );
+
+    this.setAttribute(
+        'aria-label',
+        visible ? 'Hide password' : 'Show password'
+    );
+
+});
+
+
+/* =========================================================
+   9. API REQUEST HELPER
+   Keeps the existing API endpoints and JSON structure.
+========================================================= */
+
+async function post(url, data) {
+
+    const response = await fetch(url, {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+
+        credentials: 'same-origin',
+
+        body: JSON.stringify(data)
+
+    });
+
+    const raw = await response.text();
+
+    let result = {};
+
+    try {
+
+        result = raw ? JSON.parse(raw) : {};
+
+    } catch (error) {
+
+        result = {
+            message: 'The server returned an invalid response. Check the PHP error log.'
+        };
+
+    }
+
+    return {
+        ...result,
+        httpOk: response.ok
+    };
+
+}
+
+
+/* =========================================================
+   10. LOGIN
+   Existing PHP login API and role parameter preserved.
+========================================================= */
+
+$('step-login').addEventListener('submit', async event => {
+
+    event.preventDefault();
+
+    clearMessage();
+
+    if (!role || !Object.prototype.hasOwnProperty.call(ROLES, role)) {
+
+        say('Please select your account role first.');
+
+        show('step-role');
+
+        return;
+
+    }
+
+    const email = $('login-email');
+
+    const password = $('login-password');
+
+    const button = $('login-submit');
+
+    const payload = {
+
+        email: email.value.trim(),
+
+        password: password.value,
+
+        role: role
+
+    };
+
+
+    if (!payload.email) {
+
+        say('Please enter your email address.');
+
+        email.focus();
+
+        return;
+
+    }
+
+    if (!email.validity.valid) {
+
+        say('Please enter a valid email address.');
+
+        email.focus();
+
+        return;
+
+    }
+
+    if (!payload.password) {
+
+        say('Please enter your password.');
+
+        password.focus();
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.querySelector('span').textContent = 'Signing in...';
+
+
+    let redirecting = false;
+
+    try {
+
+        const result = await post(
+            'api/auth/login.php',
+            payload
+        );
+
+        if (
+            result.httpOk &&
+            result.status === 'success' &&
+            result.redirect
+        ) {
+
+            button.querySelector('span').textContent = 'Login successful';
+
+            redirecting = true;
+
+            // PHP provides the role-based dashboard path.
+            window.location.assign(result.redirect);
+
+            return;
+
+        }
+
+        say(
+            result.message ||
+            'Sign-in failed. Check your email, password and selected role.'
+        );
+
+    } catch (error) {
+
+        console.error('MediLink login error:', error);
+
+        say(
+            error.message ||
+            'Cannot reach the server. Check XAMPP and try again.'
+        );
+
+    } finally {
+
+        if (!redirecting) {
+
+            button.disabled = false;
+
+            button.querySelector('span').textContent =
+                'Sign in to your account';
+
+        }
+
+    }
+
+});
+
+
+/* =========================================================
+   11. PATIENT REGISTRATION
+   Same endpoint and field names as original code.
+========================================================= */
+
+$('step-register').addEventListener('submit', async event => {
+
+    event.preventDefault();
+
+    clearMessage();
+
+    if (role !== 'patient') {
+
+        say('Only patient accounts can be created here.');
+
+        show('step-role');
+
+        return;
+
+    }
+
+    const form = event.currentTarget;
+
+    if (!form.reportValidity()) {
+        return;
+    }
+
+    const button = $('register-submit');
+
+    const data = Object.fromEntries(
+        new FormData(form)
+    );
+
+    button.disabled = true;
+
+    button.querySelector('span').textContent = 'Creating account...';
+
+
+    try {
+
+        const result = await post(
+            'api/auth/register.php',
+            data
+        );
+
+        if (
+            result.httpOk &&
+            result.status !== 'error' &&
+            result.success !== false
+        ) {
+
+            say(
+                result.message ||
+                'Registration successful. You can now sign in.',
+                true
+            );
+
+            // Keep the selected role as patient.
+            role = 'patient';
+
+            $('login-title').textContent = 'Sign in as Patient';
+
+            // Move the registered email to the login form.
+            $('login-email').value = data.email;
+
+            form.reset();
+
+            show('step-login');
+
+            $('login-password').focus();
+
+        } else {
+
+            say(
+                result.message ||
+                'Registration failed. Please check your information.'
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error('MediLink registration error:', error);
+
+        say(
+            error.message ||
+            'Cannot reach the registration server. Please try again.'
+        );
+
+    } finally {
+
+        button.disabled = false;
+
+        button.querySelector('span').textContent =
+            'Create patient account';
+
+    }
+
+});
+
+
+/* =========================================================
+   12. ECG ANIMATION
+   Lightweight 2.6-second visual loop.
+========================================================= */
+
+(function () {
+
+    const canvas = $('ecg');
+
+    if (!canvas) return;
+
+    const context = canvas.getContext('2d');
+
+    if (!context) return;
+
+    const reduceMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    let width = 0;
+    let height = 0;
+    let offset = 40;
+    let lastTime = 0;
+    let animationId = null;
+
+    const gaussian = (value, mean, spread) =>
+
+        Math.exp(
+            -Math.pow((value - mean) / spread, 2)
+        );
+
+    function heartbeat(position) {
+
+        return (
+
+            0.14 * gaussian(position, 0.16, 0.035)
+
+            - 0.14 * gaussian(position, 0.30, 0.010)
+
+            + gaussian(position, 0.33, 0.011)
+
+            - 0.28 * gaussian(position, 0.365, 0.012)
+
+            + 0.26 * gaussian(position, 0.60, 0.060)
+
+        );
+
+    }
+
+
+    function resizeCanvas() {
+
+        const ratio = Math.min(
+            window.devicePixelRatio || 1,
+            2
+        );
+
+        width = canvas.clientWidth;
+
+        height = canvas.clientHeight;
+
+        canvas.width = Math.round(width * ratio);
+
+        canvas.height = Math.round(height * ratio);
+
+        context.setTransform(
+            ratio, 0, 0, ratio, 0, 0
+        );
+
+        draw();
+
+    }
+
+
+    function draw() {
+
+        if (!width || !height) return;
+
+        context.clearRect(0, 0, width, height);
+
+        const beatWidth = Math.max(220, width * 0.42);
+
+        const middle = height * 0.62;
+
+        const amplitude = height * 0.50;
+
+        const gradient = context.createLinearGradient(
+            0, 0, width, 0
+        );
+
+        gradient.addColorStop(0, 'rgba(20,184,166,0)');
+
+        gradient.addColorStop(0.55, 'rgba(20,184,166,.95)');
+
+        gradient.addColorStop(1, '#70eee0');
+
+        context.strokeStyle = gradient;
+
+        context.lineWidth = 2.5;
+
+        context.lineJoin = 'round';
+
+        context.beginPath();
+
+        let y = middle;
+
+        for (let x = 0; x <= width; x += 2) {
+
+            const position =
+                (((x + offset) % beatWidth) + beatWidth)
+                % beatWidth / beatWidth;
+
+            y = middle - heartbeat(position) * amplitude;
+
+            if (x === 0) {
+                context.moveTo(x, y);
+            } else {
+                context.lineTo(x, y);
+            }
+
+        }
+
+        context.stroke();
+
+        context.fillStyle = '#b7fff4';
+
+        context.beginPath();
+
+        context.arc(width - 3, y, 4, 0, Math.PI * 2);
+
+        context.fill();
+
+    }
+
+
+    function animate(time) {
+
+        if (document.hidden) {
+            animationId = null;
+            return;
+        }
+
+        const delta = lastTime ? time - lastTime : 16;
+
+        lastTime = time;
+
+        offset += delta * 0.09;
+
+        draw();
+
+        animationId = requestAnimationFrame(animate);
+
+    }
+
+
+    function start() {
+
+        if (reduceMotion || animationId !== null) return;
+
+        animationId = requestAnimationFrame(animate);
+
+    }
+
+
+    function stop() {
+
+        if (animationId !== null) {
+
+            cancelAnimationFrame(animationId);
+
+            animationId = null;
+
+        }
+
+        lastTime = 0;
+
+    }
+
+
+    window.addEventListener('resize', resizeCanvas);
+
+    document.addEventListener('visibilitychange', () => {
+
+        if (document.hidden) {
+            stop();
+        } else {
+            start();
+        }
+
+    });
+
+    resizeCanvas();
+
+    start();
+
+})();
+
+</script>
+
+</body>
+</html>
