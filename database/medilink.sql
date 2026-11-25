@@ -190,9 +190,9 @@ CREATE TABLE billing (
     bill_date DATE NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
     payment_status ENUM('Pending', 'Paid', 'Partially Paid', 'Cancelled') DEFAULT 'Pending',
-    payment_method VARCHAR(50),
+    payment_method VARCHAR(60),
     payment_date DATE,
-    transaction_id VARCHAR(100),
+    transaction_id VARCHAR(120),
     insurance_covered DECIMAL(10,2) DEFAULT 0,
     patient_paid DECIMAL(10,2) DEFAULT 0,
     discount_amount DECIMAL(10,2) DEFAULT 0,
@@ -212,8 +212,8 @@ CREATE TABLE insurance_claims (
     claim_id INT PRIMARY KEY AUTO_INCREMENT,
     patient_id INT NOT NULL,
     bill_id INT NOT NULL,
-    insurance_provider VARCHAR(100),
-    policy_number VARCHAR(50),
+    insurance_provider VARCHAR(120),
+    policy_number VARCHAR(60),
     claim_amount DECIMAL(10,2) NOT NULL,
     claim_date DATE NOT NULL,
     status ENUM('Submitted', 'Under Review', 'Approved', 'Rejected', 'Paid') DEFAULT 'Submitted',
@@ -262,14 +262,14 @@ CREATE TABLE disease_predictions (
     prediction_id INT PRIMARY KEY AUTO_INCREMENT,
     patient_id INT NOT NULL,
     symptom_id INT,
-    predicted_disease VARCHAR(100) NOT NULL,
+    predicted_disease VARCHAR(120) NOT NULL,
     confidence_score DECIMAL(5,2) NOT NULL COMMENT '0-100 percentage',
     suggestions TEXT,
     severity_level ENUM('Low', 'Medium', 'High', 'Critical') DEFAULT 'Medium',
     recommended_tests TEXT,
     recommended_doctors TEXT,
     is_verified BOOLEAN DEFAULT FALSE,
-    actual_diagnosis VARCHAR(100),
+    actual_diagnosis VARCHAR(120),
     verification_date DATE,
     verified_by_doctor_id INT,
     notes TEXT,
@@ -315,7 +315,7 @@ CREATE TABLE recommendations (
 CREATE TABLE health_reminders (
     reminder_id INT PRIMARY KEY AUTO_INCREMENT,
     patient_id INT NOT NULL,
-    reminder_type VARCHAR(50) NOT NULL,
+    reminder_type VARCHAR(60) NOT NULL,
     reminder_text TEXT NOT NULL,
     reminder_date DATE NOT NULL,
     frequency ENUM('Once', 'Daily', 'Weekly', 'Monthly', 'Yearly') DEFAULT 'Once',
@@ -339,12 +339,12 @@ CREATE TABLE health_reminders (
 CREATE TABLE staff (
     staff_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT UNIQUE,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    department VARCHAR(100),
-    phone VARCHAR(20),
-    email VARCHAR(100),
-    shift_timing VARCHAR(50),
+    first_name VARCHAR(60) NOT NULL,
+    last_name VARCHAR(60) NOT NULL,
+    department VARCHAR(120),
+    phone VARCHAR(30),
+    email VARCHAR(120),
+    shift_timing VARCHAR(60),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -356,25 +356,25 @@ CREATE TABLE staff (
 
 -- Insert sample users
 INSERT INTO users (email, password_hash, role) VALUES 
-('admin@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'admin'),
-('doctor@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'doctor'),
-('patient@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'patient'),
-('staff@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'staff'),
-('financial@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'financial'),
-('datascientist@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'datascientist'),
-('insurance@medilink.com', '$2y$10$lh6n9yViQAvTNOAuy2siU.4SKxSnEGuck1nIymxWlDDF076cgHkn.', 'insurance');
+('admin@medilink.com', 'admin.medilink@12345.', 'admin'),
+('doctor@medilink.com', 'doctor.medilink@12345.', 'doctor'),
+('patient@medilink.com', 'patient.medilink@12345.', 'patient'),
+('staff@medilink.com', 'staff.medilink@12345.', 'staff'),
+('financial@medilink.com', 'financial.medilink@12345.', 'financial'),
+('datascientist@medilink.com', 'datascientist.medilink@12345.', 'datascientist'),
+('insurance@medilink.com', 'insurance.medilink@12345.', 'insurance');
 
 -- Insert sample patient
 INSERT INTO patients (user_id, first_name, last_name, date_of_birth, gender, phone, email) VALUES
-(3, 'John', 'Smith', '1980-05-15', 'Male', '+1234567890', 'john.smith@email.com');
+(3, 'Jarin', 'Tasnim', '2005-05-15', 'Female', '+1234567890', 'jarin.tasnim@email.com');
 
 -- Insert sample doctor
 INSERT INTO doctors (user_id, first_name, last_name, specialization, phone, email) VALUES
-(2, 'Emily', 'Chen', 'Cardiology', '+1234567891', 'emily.chen@medilink.com');
+(2, 'Kiron', 'Kodu', 'Cardiology', '+1234567891', 'kiron@medilink.com');
 
 -- Insert sample staff
 INSERT INTO staff (user_id, first_name, last_name, department, phone) VALUES
-(4, 'Sarah', 'Johnson', 'Front Desk', '+1234567892');
+(4, 'Sarah', 'Hossain', 'Front Desk', '+1234567892');
 
 -- Insert sample medical record
 INSERT INTO medical_records (patient_id, doctor_id, visit_date, diagnosis, symptoms) VALUES
@@ -413,14 +413,14 @@ INSERT INTO health_reminders (patient_id, reminder_type, reminder_text, reminder
 -- EXTRA DEMO DATA (dates are relative to today)
 -- ============================================
 INSERT INTO patients (first_name, last_name, date_of_birth, gender, phone, email, blood_group, insurance_provider) VALUES
-('Maria','Garcia','1992-03-21','Female','+1234567801','maria.garcia@email.com','O+','HealthFirst'),
+('Maria','Alam','1992-03-21','Female','+1234567801','maria@email.com','O+','HealthFirst'),
 ('Ahmed','Khan','1975-11-02','Male','+1234567802','ahmed.khan@email.com','B+','CarePlus'),
-('Lina','Park','2001-07-09','Female','+1234567803','lina.park@email.com','A-','HealthFirst'),
-('David','Brown','1968-01-30','Male','+1234567804','david.brown@email.com','AB+','CarePlus');
+('Lina','Hossain','2001-07-09','Female','+1234567803','lina@email.com','A-','HealthFirst'),
+('Momtaz','Begum','1968-01-30','Male','+1234567804','momtaz@email.com','AB+','CarePlus');
 
 INSERT INTO doctors (first_name, last_name, specialization, qualification, phone, email, consultation_fee, available_days, available_time, license_number, experience_years) VALUES
 ('Rafiq','Hasan','Neurology','MD, DM Neurology','+1234567811','rafiq.hasan@medilink.com',120,'Mon-Fri','9AM-5PM','LIC-1001',12),
-('Sophie','Turner','Pediatrics','MBBS, DCH','+1234567812','sophie.turner@medilink.com',90,'Mon-Sat','10AM-4PM','LIC-1002',8),
+('Kuddush','Turner','Pediatrics','MBBS, DCH','+1234567812','kuddush.turner@medilink.com',90,'Mon-Sat','10AM-4PM','LIC-1002',8),
 ('Omar','Ali','General Medicine','MBBS, MD','+1234567813','omar.ali@medilink.com',70,'Sun-Thu','8AM-2PM','LIC-1003',15);
 
 INSERT INTO appointments (patient_id, doctor_id, appointment_date, appointment_time, status, reason) VALUES
