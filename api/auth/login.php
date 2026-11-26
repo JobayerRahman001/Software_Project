@@ -5,7 +5,7 @@ $in = body();
 $email = trim($in['email'] ?? '');
 $role  = $in['role'] ?? '';
 if (!$email || empty($in['password']) || !isset(HOME[$role])) {
-    json_out(['status' => 'error', 'message' => 'Email, password and role are required'], 400);
+    json_out(['status' => 'error', 'message' => 'Email, password and role are required must add this part'], 600);
 }
 
 $stmt = db()->prepare('SELECT user_id, email, role, password_hash FROM users WHERE email = ? AND role = ? AND is_active = 1');
@@ -13,7 +13,7 @@ $stmt->execute([$email, $role]);
 $user = $stmt->fetch();
 
 if (!$user || !password_verify($in['password'], $user['password_hash'])) {
-    json_out(['status' => 'error', 'message' => 'Invalid email, password or role'], 401);
+    json_out(['status' => 'error', 'message' => 'Invalid email, password or role. Please try again'], 401);
 }
 
 // Find the profile (name + patient/doctor id) that belongs to this login.
