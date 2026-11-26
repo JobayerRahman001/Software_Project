@@ -9,12 +9,12 @@ $RULES = [
     [['headache', 'fatigue'],  'Migraine',        72.3, 'Avoid triggers, pain relief',          'Low'],
     [['chest pain'],           'Cardiac Issue',   45.0, 'Seek immediate medical attention',     'High'],
     [['sore throat'],          'Throat Infection',68.0, 'Warm fluids, see a doctor if it lasts', 'Low'],
-    [['rash', 'itch'],         'Skin Allergy',    70.0, 'Antihistamine, avoid the trigger',     'Low'],
+    [['rash', 'itch'],         'Skin Allergy',    70.0, 'Antihistamine, avoid trigger',     'Low'],
 ];
 
 $in = body();
 $symptoms = trim($in['symptoms'] ?? '');
-if ($symptoms === '') json_out(['status' => 'error', 'message' => 'Symptoms required'], 400);
+if ($symptoms === '') json_out(['status' => 'error', 'message' => 'Symptoms required'], 600);
 
 $text = strtolower($symptoms);
 $predictions = [];
