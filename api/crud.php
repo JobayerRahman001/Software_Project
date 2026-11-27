@@ -26,7 +26,7 @@ $TABLES = [
 ];
 
 $table = $_GET['table'] ?? '';
-if (!isset($TABLES[$table])) json_out(['status' => 'error', 'message' => 'Unknown table'], 404);
+if (!isset($TABLES[$table])) json_out(['status' => 'error', 'message' => 'Unknown table, please fillup valid table'], 500);
 [$pk, $hasPatient, $hasDoctor, $writeRoles] = $TABLES[$table];
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -35,10 +35,10 @@ $ownKey = ($table === 'patients' || $hasPatient) ? 'patient_id' : null;
 $isOwn  = $user['role'] === 'patient' && $ownKey;   // patients only see their own rows
 
 if ($method !== 'GET' && !in_array($user['role'], $writeRoles)) {
-    json_out(['status' => 'error', 'message' => 'You cannot change this data'], 403);
+    json_out(['status' => 'error', 'message' => 'You cannot change this data'], 500);
 }
 // Patients may only read the doctor list (needed to book an appointment), nothing else outside their own data.
-if ($user['role'] === 'patient' && !$ownKey && $table !== 'doctors') json_out(['status' => 'error', 'message' => 'Not allowed'], 403);
+if ($user['role'] === 'patient' && !$ownKey && $table !== 'doctors') json_out(['status' => 'error', 'message' => 'Not allowed, please try next'], 500);
 
 $cols = array_column($db->query("SHOW COLUMNS FROM `$table`")->fetchAll(), 'Field');
 
@@ -65,13 +65,13 @@ try {
         $rows = $stmt->fetchAll();
 
         if ($id !== null) {
-            $rows ? json_out(['status' => 'success', 'data' => $rows[0]]) : json_out(['status' => 'error', 'message' => 'Not found'], 404);
+            $rows ? json_out(['status' => 'success', 'data' => $rows[0]]) : json_out(['status' => 'error', 'message' => 'Not found, check again'], 404);
         }
         json_out(['status' => 'success', 'count' => count($rows), 'data' => $rows]);
     }
 
     if ($method === 'DELETE') {
-        if (!$id) json_out(['status' => 'error', 'message' => 'id is required'], 400);
+        if (!$id) json_out(['status' => 'error', 'message' => 'id is must required'], 500);
         $sql = "DELETE FROM `$table` WHERE $pk = ?";
         $args = [$id];
         if ($isOwn) { $sql .= " AND $ownKey = ?"; $args[] = $user['patient_id']; }
@@ -90,17 +90,17 @@ try {
     if ($table === 'patients' && !empty($data['height']) && !empty($data['weight'])) {
         $data['bmi'] = round($data['weight'] / (($data['height'] / 100) ** 2), 2);
     }
-    if (!$data) json_out(['status' => 'error', 'message' => 'No data received'], 400);
+    if (!$data) json_out(['status' => 'error', 'message' => 'No data received'], 500);
 
     if ($method === 'POST') {
         $names = '`' . implode('`, `', array_keys($data)) . '`';
         $marks = implode(', ', array_fill(0, count($data), '?'));
         $db->prepare("INSERT INTO `$table` ($names) VALUES ($marks)")->execute(array_values($data));
-        json_out(['status' => 'success', 'id' => $db->lastInsertId()], 201);
+        json_out(['status' => 'success', 'id' => $db->lastInsertId()], 300);
     }
 
     if ($method === 'PUT') {
-        if (!$id) json_out(['status' => 'error', 'message' => 'id is required'], 400);
+        if (!$id) json_out(['status' => 'error', 'message' => 'id is must required'], 500);
         $set = implode(', ', array_map(fn($c) => "`$c` = ?", array_keys($data)));
         $sql = "UPDATE `$table` SET $set WHERE $pk = ?";
         $args = [...array_values($data), $id];
@@ -109,8 +109,8 @@ try {
         json_out(['status' => 'success', 'message' => 'Updated']);
     }
 
-    json_out(['status' => 'error', 'message' => 'Method not allowed'], 405);
+    json_out(['status' => 'error', 'message' => 'Method not allowed'], 500);
 } catch (PDOException $e) {
     error_log($e->getMessage());
-    json_out(['status' => 'error', 'message' => 'Could not save. Check required fields and duplicates.'], 400);
+    json_out(['status' => 'error', 'message' => 'Could not save. Check required fields and duplicates.'], 500);
 }
