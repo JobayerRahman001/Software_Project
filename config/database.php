@@ -1,11 +1,9 @@
 <?php
-// Database settings - change these if your MySQL setup is different.
 const DB_HOST = 'localhost';
 const DB_NAME = 'medilink';
 const DB_USER = 'root';
 const DB_PASS = '';
 
-// One shared PDO connection for the whole request.
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
